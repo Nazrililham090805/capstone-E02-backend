@@ -13,22 +13,16 @@ app.use('/compost', compostRouter);
 app.use('/admin', adminRouter);
 
 // Root route
-app.get('/', (req, res) => {
-  res.json({ message: 'Backend running successfully!' });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
+app.get('/', async (req, res) => {
   try {
     const client = await pool.connect();
     const result = await client.query('SELECT NOW()');
-    console.log('✅ Connected to PostgreSQL at:', result.rows[0].now);
     client.release();
+    res.json({ message: '✅ Connected to PostgreSQL', time: result.rows[0].now });
   } catch (err) {
-    console.error('❌ Database connection error:', err.message);
+    console.error('Database error:', err);
+    res.status(500).json({ error: 'Database connection failed', detail: err.message });
   }
-
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
 
 export default app;
