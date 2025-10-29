@@ -12,6 +12,37 @@ export const getCompostRecordById = async (id) => {
   return result.rows[0];
 };
 
+export const getLatestCompost = async () => {
+  const result = await pool.query(
+    "SELECT * FROM compost ORDER BY tanggal DESC LIMIT 1"
+  );
+  return result.rows[0];
+};
+
+export const getCompostStats = async () => {
+  const result = await pool.query(`
+    SELECT 
+      COUNT(*) as total_kompos,
+      COUNT(CASE WHEN kualitas = 'Sesuai Standar' THEN 1 END) as sesuai_standar,
+      COUNT(CASE WHEN kualitas = 'Tidak Sesuai Standar' THEN 1 END) as tidak_sesuai_standar
+    FROM compost
+  `);
+  return result.rows[0];
+};
+
+export const getCompostRecords = async () => {
+  const result = await pool.query(`
+    SELECT 
+      id,
+      tanggal,
+      kualitas,
+      keterangan
+    FROM compost 
+    ORDER BY tanggal DESC 
+  `);
+  return result.rows;
+};
+
 export const createCompostRecord = async (data) => {
   const {
     ph,

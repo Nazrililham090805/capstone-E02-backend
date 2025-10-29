@@ -4,6 +4,9 @@ import {
   getCompostRecordById,
   updateCompostRecord,
   deleteCompostRecord,
+  getLatestCompost,
+  getCompostStats,
+  getCompostRecords
 } from '../models/compost_model.js';
 
 export const CompostController = {
@@ -25,6 +28,37 @@ export const CompostController = {
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Failed to fetch record' });
+    }
+  },
+
+  async getRecords (req, res) {
+    try {
+      const status = await getCompostRecords();
+      res.json(status);
+    } catch (err) {
+      console.error('Error getting compost status:', err);
+      res.status(500).json({ error: 'Failed to get compost status' });
+    }
+  },
+
+  async getLatest(req, res) {
+    try {
+      const record = await getLatestCompost();
+      if (!record) return res.status(404).json({ error: 'No records found' });
+      res.json(record);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to fetch latest record' });
+    }
+  },
+
+  async getStats(req, res) {
+    try {
+      const stats = await getCompostStats();
+      res.json(stats);
+    } catch (err) {
+      console.error('Error getting compost stats:', err);
+      res.status(500).json({ error: 'Failed to get compost statistics' });
     }
   },
 

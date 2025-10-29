@@ -17,3 +17,11 @@ async function warmupDbClients(count = parseInt(process.env.PG_WARMUP_CLIENTS, 1
     console.warn('DB warmup failed:', err.message);
   }
 }
+
+const PORT = process.env.PORT || 3000;
+(async () => {
+  // start server immediately so frontend tidak nunggu warmup
+  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
+  warmupDbClients();
+})();
