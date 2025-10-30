@@ -45,7 +45,7 @@ export const getCompostRecords = async (page = 1, limit = 10) => {
     SELECT * FROM compost_view
     LIMIT $1 OFFSET $2
     `,
-    [limit, offset]
+    [limit, offset] 
   );
 
   const totalResult = await pool.query(`SELECT COUNT(*) AS total FROM compost_view`);
