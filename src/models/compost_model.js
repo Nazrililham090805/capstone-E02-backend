@@ -30,17 +30,28 @@ export const getCompostStats = async () => {
   return result.rows[0];
 };
 
-export const getCompostRecords = async () => {
-  const result = await pool.query(`
-    SELECT 
-      id,
-      tanggal,
-      kualitas,
-      keterangan
-    FROM compost 
-    ORDER BY tanggal DESC 
-  `);
-  return result.rows;
+export const getCompostRecords = async (page = 1, limit = 10) => {
+  const offset = (page - 1) * limit;
+
+  const result = await pool.query(
+    `
+    SELECT * FROM compost_view
+    LIMIT $1 OFFSET $2
+    `,
+    [limit, offset]
+  );
+
+  const totalResult = await pool.query(`SELECT COUNT(*) AS total FROM compost`);
+  const total = parseInt(totalResult.rows[0].total, 10);
+  const totalPages = Math.ceil(total / limit);
+
+  return {
+    data: result.rows,
+    page,
+    limit,
+    total,
+    totalPages,
+  };
 };
 
 export const createCompostRecord = async (data) => {
