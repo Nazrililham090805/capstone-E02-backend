@@ -13,9 +13,7 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: true,
     ca: process.env.DB_CA
-  },
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000
+  }
 });
 
 export default pool;
