@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get('/', CompostController.getAll);
 router.get('/stats', CompostController.getStats);
+router.get('/records/page/:page/limit/:limit', CompostController.getRecords);
+router.get('/records/page/:page', CompostController.getRecords);
 router.get('/records', CompostController.getRecords);
 router.get('/latest', CompostController.getLatest);
 router.get('/:id', CompostController.getById);

@@ -31,6 +31,13 @@ export const getCompostStats = async () => {
 };
 
 export const getCompostRecords = async (page = 1, limit = 10) => {
+  // normalize/validate inputs (controller/routes may pass strings or undefined)
+  page = Number.isFinite(Number(page)) ? Math.max(1, parseInt(page, 10)) : 1;
+  limit = Number.isFinite(Number(limit)) ? Math.max(1, parseInt(limit, 10)) : 10;
+
+  const MAX_LIMIT = 100;
+  limit = Math.min(limit, MAX_LIMIT);
+
   const offset = (page - 1) * limit;
 
   const result = await pool.query(
@@ -41,16 +48,20 @@ export const getCompostRecords = async (page = 1, limit = 10) => {
     [limit, offset]
   );
 
-  const totalResult = await pool.query(`SELECT COUNT(*) AS total FROM compost`);
-  const total = parseInt(totalResult.rows[0].total, 10);
-  const totalPages = Math.ceil(total / limit);
+  const totalResult = await pool.query(`SELECT COUNT(*) AS total FROM compost_view`);
+  const total = parseInt(totalResult.rows[0].total, 10) || 0;
+  const totalPages = limit > 0 ? Math.max(1, Math.ceil(total / limit)) : 1;
 
   return {
     data: result.rows,
-    page,
-    limit,
-    total,
-    totalPages,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1
+    }
   };
 };
 
