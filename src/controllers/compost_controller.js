@@ -38,8 +38,32 @@ export const CompostController = {
   } catch (err) {
     console.error('Error getting compost records:', err);
     res.status(500).json({ error: 'Failed to get compost records' });
-  }
-},
+    }
+  },
+
+  async getRecordsDefault(req, res) {
+    try {
+      const defaultQuery = {
+        page: 1,
+        limit: 10,
+      };
+      const result = await getCompostRecords(defaultQuery);
+      res.json(result);
+    } catch (err) {
+      console.error('Error getting default compost records:', err);
+      res.status(500).json({ error: 'Failed to get default compost records' });
+    }
+  },
+
+  async getRecordsDefault(req, res) {
+    try {
+      const result = await getDefaultCompostRecords();
+      res.json(result);
+    } catch (err) {
+      console.error('Error getting default compost records:', err);
+      res.status(500).json({ error: 'Failed to get default compost records' });
+    }
+  },
 
   async getLatest(req, res) {
     try {

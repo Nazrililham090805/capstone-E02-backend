@@ -115,6 +115,33 @@ export const getCompostRecords = async (query) => {
   };
 };
 
+export const getDefaultCompostRecords = async () => {
+  // Query data utama (ringan)
+  const result = await pool.query(`
+    SELECT id, tanggal, kadar_n, kadar_p, kadar_k, kualitas, keterangan
+    FROM compost_view
+    ORDER BY tanggal DESC
+    LIMIT 10;
+  `);
+
+  // Query total data (untuk meta)
+  const totalResult = await pool.query(`SELECT COUNT(*) AS total FROM compost_view;`);
+  const total = parseInt(totalResult.rows[0].total, 10) || 0;
+  const limit = 10;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  return {
+    data: result.rows,
+    meta: {
+      total,
+      page: 1,
+      limit,
+      totalPages,
+      hasNext: total > limit,
+      hasPrev: false,
+    },
+  };
+};
 
 export const createCompostRecord = async (data) => {
   const {
