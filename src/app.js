@@ -10,8 +10,8 @@ import pool from './config/db.js';
 const app = express();
 
 const allowedOrigins = [
-  "https://capstone-e02-frontend-admin.vercel.app",
-  
+  "http://localhost:5173",
+  "https://capstone-e02-frontend-admin.vercel.app"
 ];
 
 // Security, compression, logging BEFORE routes
