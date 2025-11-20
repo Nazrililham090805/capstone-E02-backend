@@ -37,7 +37,7 @@ export const adminController = {
       const token = jwt.sign(
         { id: admin.id, username: admin.username },
         process.env.JWT_SECRET,
-        { expiresIn: '1d' }
+        { expiresIn: '1h' }
       );
 
       res.json({ message: 'Login successful', token });
